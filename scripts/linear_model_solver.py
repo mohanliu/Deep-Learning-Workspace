@@ -13,9 +13,10 @@ from linear_model import LinearModel
 console = Console()
 
 NDIM = 4
-NUM_DATA = 500
+NUM_DATA = 1000
 BS = 4
 NUM_EPOCHS = 5
+MAX_NORM = 0.9
 VERBOSE_STEP = NUM_DATA // BS // 5
 
 
@@ -33,7 +34,7 @@ def main():
     optim = torch.optim.SGD(lm.parameters(), lr=1e-2)
 
     # load scheduler
-    scheduler = torch.optim.lr_scheduler.StepLR(optim, step_size=1, gamma=0.9)
+    scheduler = torch.optim.lr_scheduler.StepLR(optim, step_size=1, gamma=0.8)
 
     # simulate training data and targets
     train_x = torch.randn(NUM_DATA, NDIM)
@@ -56,6 +57,7 @@ def main():
             # back-propagation
             optim.zero_grad()  # clear previous gradients
             loss.backward()  # calculate current gradients
+            torch.nn.utils.clip_grad_norm_(lm.parameters(), MAX_NORM)  # clip gradients
             optim.step()  # optimize the current parameters
 
         console.print("[-] Current loss: {:.6f}".format(loss.item()))
