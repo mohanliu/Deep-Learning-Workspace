@@ -73,6 +73,8 @@ Architecture:
 
     <img src="../figures/mobilenet_ir.png" alt="drawing" width="400"/>
 
+    <img src="../figures/inverted_block_mobilenet.png" alt="drawing" width="300"/>
+
 - [Main Class](https://github.com/pytorch/vision/blob/v0.9.0/torchvision/models/mobilenetv2.py#L102-L198) 
     > ConvBNReLU: regular layer<br>
     > **InvertedResidual (x 7)**: see bottleneck operators in the figure below<br>
