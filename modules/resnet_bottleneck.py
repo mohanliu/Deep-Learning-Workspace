@@ -28,6 +28,7 @@ class Bottleneck(nn.Module):
         # Both self.conv2 and self.downsample layers downsample the input when stride != 1
         # Note: all Convolution layers does not have bias!!
         # Note: conv1x1 layers are used to reduce computation for conv3x3.
+        # Note: to reduce resolution by a factor 2, set stride=2, pad=1 if 3x3 or pad=0 if 1x1
 
         # Firstly, a Conv1x1 to reduce dimension for later conv3x3
         self.conv1 = nn.Conv2d(
@@ -75,7 +76,7 @@ class Bottleneck(nn.Module):
                     kernel_size=1,
                     stride=stride,
                     bias=False,
-                ),
+                ),  # here use a 1x1 conv layer with stride to downsize both resolution and width
                 nn.BatchNorm2d(planes * self.expansion),
             )
         else:
