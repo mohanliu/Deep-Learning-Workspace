@@ -149,6 +149,7 @@ if __name__ == "__main__":
     console.rule("First layer of a stage (with downsample)")
 
     m_1 = Bottleneck(PREV_PLANES, NUM_PLANES, FIRST_LAYER_STRIDE)
+    console.print(m_1)
     for k, v in m_1.named_parameters():
         if k.startswith("bn"):
             continue
@@ -156,6 +157,7 @@ if __name__ == "__main__":
 
     console.rule("Repeated layers of a stage (with expansion of 4 for bottleneck)")
     m_2 = Bottleneck(NUM_PLANES * 4, NUM_PLANES, 1)
+    console.print(m_2)
     for k, v in m_2.named_parameters():
         if k.startswith("bn"):
             continue
