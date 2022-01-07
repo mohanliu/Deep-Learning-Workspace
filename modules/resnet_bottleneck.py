@@ -26,9 +26,10 @@ class Bottleneck(nn.Module):
         )  # by default, `width == planes`
 
         # Both self.conv2 and self.downsample layers downsample the input when stride != 1
-        # Note that all Convolution layers does not have bias!!
+        # Note: all Convolution layers does not have bias!!
+        # Note: conv1x1 layers are used to reduce computation for conv3x3.
 
-        # Firstly, a Conv1x1 to map input channels to hidden channels
+        # Firstly, a Conv1x1 to reduce dimension for later conv3x3
         self.conv1 = nn.Conv2d(
             in_channels=inplanes,
             out_channels=width,
@@ -38,7 +39,8 @@ class Bottleneck(nn.Module):
         )
         self.bn1 = nn.BatchNorm2d(width)
 
-        # Secondly, a Conv3x3 with stride to downsize spatial size
+        # Secondly, a Conv3x3 with thinner channels to learn spatial features
+        # (if stride > 1, then downsize)
         self.conv2 = nn.Conv2d(
             in_channels=width,
             out_channels=width,
@@ -51,7 +53,7 @@ class Bottleneck(nn.Module):
         )
         self.bn2 = nn.BatchNorm2d(width)
 
-        # Then, another Conv1x1 to map to expanded channels
+        # Then, another Conv1x1 to increase width to expanded channels
         self.conv3 = nn.Conv2d(
             in_channels=width,
             out_channels=planes * self.expansion,
