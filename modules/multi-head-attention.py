@@ -104,6 +104,13 @@ class MultiheadAttention(nn.Module):
 
 
 if __name__ == "__main__":
+    from rich.console import Console
+
+    console = Console()
+
     m = MultiheadAttention(32)
+    console.rule("Model summary")
+    console.print(m)
+    console.rule("Weights")
     for k, v in m.named_parameters():
-        print("{}: {}".format(k, str(v.shape)))
+        console.print("{}: {}".format(k, str(v.shape)))
