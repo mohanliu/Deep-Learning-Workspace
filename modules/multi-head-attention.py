@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Any, Callable, List, Optional, Tuple
@@ -85,19 +86,31 @@ class MultiheadAttention(nn.Module):
         """
         B, N, C = x.shape
         qkv = (
-            self.qkv(x)  # map input to QKV vectors
-            .reshape(
+            self.qkv(x)  # map input to QKV vectors: B x N x C*3
+            .view(
                 B, N, 3, self.num_heads, C // self.num_heads
             )  # reshape channels into multiple heads: 3C --> 3 x h x C/h
             .permute(2, 0, 3, 1, 4)  # final order: qkv, B, h, N, C/h
         )
+        # (B, N, Cx3) -> (B, H, 3, h, C/h) -> (3, B, h, N, C/h)
         q, k, v = qkv.unbind(0)  # q,k,v: B, h, N, C/h
 
-        attn = (q @ k.transpose(-2, -1)) * self.scale  # QK^T/sqrt(d)
-        attn = attn.softmax(dim=-1)  # global softmax: softmax(QK^T/sqrt(d))
+        # Performing: QK^T/sqrt(d)
+        attn = (q @ k.transpose(2, 3)) * self.scale
+        # (B, h, N, C/h) x (B, h, C/h, N) -> (B, h, N, N)
+
+        # Performing: softmax(QK^T/sqrt(d))
+        attn = attn.softmax(dim=-1)  # global softmax with dim=-1
         attn = self.attention_dropout(attn)
 
-        x = (attn @ v).transpose(1, 2).reshape(B, N, C)  # softmax(QK^T/sqrt(d))*v
+        # Performing: softmax(QK^T/sqrt(d))*v
+        x = (
+            (attn @ v)  # (B, h, N, N) x (B, h, N, C/h) -> (B, h, N, C/h)
+            .transpose(1, 2)  # (B, h, N, C/h) -> (B, N, h, C/h)
+            .contiguous()
+            .view(B, N, C)  # (B, N, h, C/h) -> (B, N, C)
+        )
+
         x = self.proj(x)  # a linear layer for multi-head attention
         x = self.projection_dropout(x)
         return x
@@ -108,9 +121,18 @@ if __name__ == "__main__":
 
     console = Console()
 
-    m = MultiheadAttention(32)
+    HIDDEN_DIM = 768
+
+    m = MultiheadAttention(HIDDEN_DIM)
     console.rule("Model summary")
     console.print(m)
     console.rule("Weights")
     for k, v in m.named_parameters():
         console.print("{}: {}".format(k, str(v.shape)))
+
+    console.rule("Forward pass")
+    input_tensor = torch.randn(32, 100, HIDDEN_DIM)
+    output_tensor = m(input_tensor)
+
+    console.print("Input tensor shape: {}".format(input_tensor.shape))
+    console.print("Output tensor shape: {}".format(output_tensor.shape))
