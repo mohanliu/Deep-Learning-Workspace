@@ -1,6 +1,13 @@
-# Deep Learning Notes
+# Deep Learning Workspace
 
-## [Models](docs/models.md)
-## [Papers](docs/PaperReviews.md)
-## [Data Augmentation](docs/transforms.md)
-## [Loss Function](docs/losses.md)
+> This repo contains some documentations and implementations of deep learning models.
+
+## Implemntations
+
+- [Common Modules](modules/)
+- [Basic Operations in Pytorch (Jupyter Notebooks)](basic_operations)
+
+## Documentations
+
+- [Models](docs/models.md)
+- [Papers Highlights](docs/PaperReviews.md)
