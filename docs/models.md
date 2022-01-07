@@ -1,6 +1,6 @@
 # Resnet
 
-![img](../figures/resnetarch.png)
+![img](../static/figures/resnetarch.png)
 
 Paper: [Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1512.03385.pdf)
 
@@ -24,7 +24,7 @@ Architecture:
     > Add *Res (w or w/o downsample)*<br>
     > Relu
 
-    <img src="../figures/bottleneck.png" alt="drawing" width="400"/>
+    <img src="../static/figures/bottleneck.png" alt="drawing" width="400"/>
 
 - [Global Module](https://github.com/pytorch/vision/blob/v0.9.0/torchvision/models/resnet.py#L144-L249)
     > Conv7x7 + BN + Relu + MaxPool<br>
@@ -71,9 +71,9 @@ Architecture:
     > Conv1x1 + BN: linear bottleneck (no ReLu layer) & pointwise convolution (1x1 kernal)<br>
     > Add *Res*: inverted, connects bottlenecks as oppose to high number channels
 
-    <img src="../figures/mobilenet_ir.png" alt="drawing" width="400"/>
+    <img src="../static/figures/mobilenet_ir.png" alt="drawing" width="400"/>
 
-    <img src="../figures/inverted_block_mobilenet.png" alt="drawing" width="300"/>
+    <img src="../static/figures/inverted_block_mobilenet.png" alt="drawing" width="300"/>
 
 - [Main Class](https://github.com/pytorch/vision/blob/v0.9.0/torchvision/models/mobilenetv2.py#L102-L198) 
     > ConvBNReLU: regular layer<br>
@@ -82,7 +82,7 @@ Architecture:
     > adaptive average pooling 2D + flatten<br>
     > Classifier: dropout + linear<br>
 
-    <img src="../figures/mobilenetv2.png" alt="drawing" width="400"/>
+    <img src="../static/figures/mobilenetv2.png" alt="drawing" width="400"/>
 
 # Transformer
 
@@ -115,7 +115,7 @@ Architecture:
     > `activation`: the activation function of encoder/decoder intermediate layer, relu or gelu (default=relu)
 
 
-    <img src="../figures/transformer.png" alt="drawing" width="400"/>
+    <img src="../static/figures/transformer.png" alt="drawing" width="400"/>
 
 - [TransformerEncoder](https://github.com/pytorch/pytorch/blob/v1.8.0/torch/nn/modules/transformer.py#L145-L186)
     > TransformerEncoderLayer (x 6)<br>
@@ -125,7 +125,7 @@ Architecture:
     > `encoder_layer`: an instance of the `TransformerEncoderLayer()` class (required)<br>
     > `num_layers`: the number of sub-encoder-layers in the encoder (default=6)<br>
 
-    <img src="../figures/layernorm.png" alt="drawing" width="200"/>
+    <img src="../static/figures/layernorm.png" alt="drawing" width="200"/>
 
 
 - [TransformerDecoder](https://github.com/pytorch/pytorch/blob/v1.8.0/torch/nn/modules/transformer.py#L189-L239)
@@ -185,7 +185,7 @@ Architecture:
     > 
     > `L`: target sequence length, `N`: batch size, `E`: embedding dimension, `S`: source sequence length
 
-    <img src="../figures/mha.png" alt="drawing" width="400"/>
+    <img src="../static/figures/mha.png" alt="drawing" width="400"/>
     <br>
     <img src="https://latex.codecogs.com/png.latex?\dpi{150}&space;\bg_white&space;\rm{Attention}\it{(Q,K,V)}=\rm{Softmax}\it{\left(\frac{QK^T}{\sqrt{d_k}}\right)V}" title="MHA" width="400"/>
 
@@ -218,7 +218,7 @@ Architecture:
     > 
     > Note: during training, [aux_head](https://github.com/hszhao/semseg/blob/4f274c3f276778228bc14a4565822d46359f0cc8/model/pspnet.py#L97-L103) is used to provide auxilary loss. It takes output of resnet Layer3 and feed into a FCN + Upsample module. 
 
-<img src="../figures/pspnet.png" alt="drawing"/>
+<img src="../static/figures/pspnet.png" alt="drawing"/>
 
 # DeepLabV3
 
