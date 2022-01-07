@@ -8,7 +8,7 @@
   - [Simple Linear Model](modules/linear_model.py)
   - [Multi-head Attention](modules/multi-head-attention.py)
   - [Bottleneck (ResNet)](modules/resnet_bottleneck.py)
-  - [InvertedResidul (MobileNet v2)](modules/mobilenet_invertedresidual.py)
+  - [InvertedResidual (MobileNet v2)](modules/mobilenet_invertedresidual.py)
 - [Basic Operations in Pytorch (Jupyter Notebooks)](basic_operations)
   - [Reshape Tensor](basic_operations/tensor_shape.ipynb)
   - [Basic Operators](basic_operations/operators.ipynb)
