@@ -56,15 +56,17 @@ class InvertedResidual(nn.Module):
                     nn.ReLU6(inplace=True),
                 ),
                 # pointwise & linear (no ReLU activation)
-                nn.Conv2d(
-                    in_channels=hidden_dim,
-                    out_channels=oup,
-                    kernel_size=1,
-                    stride=1,
-                    padding=0,
-                    bias=False,
+                nn.Sequential(
+                    nn.Conv2d(
+                        in_channels=hidden_dim,
+                        out_channels=oup,
+                        kernel_size=1,
+                        stride=1,
+                        padding=0,
+                        bias=False,
+                    ),
+                    nn.BatchNorm2d(oup),
                 ),
-                nn.BatchNorm2d(oup),
             ]
         )
         self.conv = nn.Sequential(*layers)
