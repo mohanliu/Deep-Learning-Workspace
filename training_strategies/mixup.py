@@ -13,20 +13,34 @@ import torch
 
 
 def one_hot(x, num_classes, on_value=1.0, off_value=0.0, device="cuda"):
-    x = x.long().view(-1, 1)
-    return torch.full((x.size()[0], num_classes), off_value, device=device).scatter_(
-        1, x, on_value
+    x = x.long().view(-1, 1)  # convert x to long integer and reshape to (len(x), 1)
+    return torch.full(
+        (x.size()[0], num_classes),  # one-hot placeholder
+        off_value,  # default values for negative values
+        device=device,
+    ).scatter_(
+        1,  # dimension to scatter (axis=0 is sample index, axis=1 is label columns)
+        x,  # index to scatter and fill (labels with class id)
+        on_value,  # value to fill the one-hot matrix
     )
 
 
 def mixup_target(target, num_classes, lam=1.0, smoothing=0.0, device="cuda"):
+    """
+    q'(x) = (1 - LS) * q(x) + LS/num_classes
+
+        - q(x) = 0: q'(x) = LS/num_classes (`off_value`)
+        - q(x) = 1: q'(x) = 1 - LS + LS/num_classes = 1 - LS + `off_value` (`on_value`)
+    """
+    # on/off values check docstring
     off_value = smoothing / num_classes
     on_value = 1.0 - smoothing + off_value
+
     y1 = one_hot(
         target, num_classes, on_value=on_value, off_value=off_value, device=device
     )
     y2 = one_hot(
-        target.flip(0),
+        target.flip(0),  # reverse labels for the 2nd sample
         num_classes,
         on_value=on_value,
         off_value=off_value,
@@ -41,9 +55,17 @@ def rand_bbox(img_shape, lam, margin=0.0, count=None):
     support for enforcing a border margin as percent of bbox dimensions.
     Args:
         img_shape (tuple): Image shape as tuple
-        lam (float): Cutmix lambda value
+        lam (float): Cutmix lambda value (ratio of bbox area to original image size)
         margin (float): Percentage of bbox dimension to enforce as margin (reduce amount of box outside image)
         count (int): Number of bbox to generate
+
+    BBOX coords: (r_x, r_y, r_w, r_h)
+    - r_x: uniform random sample from (0, W)
+    - r_y: uniform random sample from (0, H)
+    - r_w: W x sqrt(1 - lambda)
+    - r_h: H x sqrt(1 - lambda)
+
+    Therefore, Area of BBOX = (1 - lambda) x WH
     """
     ratio = np.sqrt(1 - lam)
     img_h, img_w = img_shape[-2:]
