@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class LabelSmoothingCrossEntropy(nn.Module):
+class LabelSmoothingNLL(nn.Module):
     """
     NLL loss with label smoothing.
 
@@ -21,16 +21,18 @@ class LabelSmoothingCrossEntropy(nn.Module):
         - p(x) is prediction and q(x) is ground truth
         - Multi-class classification (with softmax activation function)
         - considers only the output for the corresponding class
+        - target must be class with ID (type: Long()) to use `F.nll_loss()`
 
     CE:
         - cross entropy
         - CE loss = - \sum_{K} (log(p(x)) x q(x) + log(1 - p(x)) x (1 - q(x)))
         - Binary classification (with sigmoid activation function)
         - considers the other outputs as well
+        - target can be float
     """
 
     def __init__(self, smoothing=0.1):
-        super(LabelSmoothingCrossEntropy, self).__init__()
+        super(LabelSmoothingNLL, self).__init__()
         assert smoothing < 1.0
         self.smoothing = smoothing  # LS
         self.confidence = 1.0 - smoothing  # 1 - LS
@@ -74,7 +76,7 @@ class LabelSmoothingCrossEntropy(nn.Module):
 
 
 if __name__ == "__main__":
-    LSLoss = LabelSmoothingCrossEntropy()
+    LSLoss = LabelSmoothingNLL()
 
     pred = torch.tensor(
         [
