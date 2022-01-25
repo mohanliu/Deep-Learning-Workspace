@@ -109,6 +109,7 @@ class Bottleneck(nn.Module):
 
 if __name__ == "__main__":
     import sys
+
     from rich.console import Console
 
     console = Console()
